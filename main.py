@@ -3,7 +3,7 @@ from scipy.sparse import csr_matrix
 import random
 import pickle
 import recommender
-def writeRatingsToFile():
+def writeRatingsToFile(fraction):
 	users={}
 	movies={}
 	ratings=[]
@@ -21,7 +21,6 @@ def writeRatingsToFile():
 	users1={}
 	movies1={}
 	r=[]
-	fraction=10
 	for uid in users:
 		if random.randrange(fraction)==0:
 			users1[uid]=len(users1)
@@ -67,27 +66,33 @@ def readRatingsFromFile():
 	return matrix
 
 def main():
-	'''
-	matrix=readRatings()
-	input()
-	matrix1=numpy.ndarray(matrix.shape)
-	input()
-	'''
-	#writeRatingsToFile()
-	#'''
-	numpy.seterr(all='raise')
-	matrix=readRatingsFromFile()
-	#matrix=csr_matrix(matrix)
+	i=int(input())
+	if i==0:
+		n=int(input())
+		writeRatingsToFile(n)
 	
-	#matrix=numpy.array([[1,2,3,4,0],[2,3,4,0,1],[3,4,0,1,2],[4,0,1,2,3],[0,1,2,3,4]])
-	#matrix=numpy.array([[3,1,1],[-1,3,1]])
-	#matrix=numpy.array([[3,2,2],[2,3,-2]])
-	#matrix=numpy.array([[2,2,0],[-1,-1,0]])
-	#matrix=numpy.array([[2,4],[1,3],[6,5],[7,9]])
-	#print(matrix.shape)
-	cf=recommender.SVDRecommenderSystem(matrix)
-	k=cf.predict()
-	
+	elif i==1:
+		#'''
+		numpy.seterr(all='raise')
+		matrix=readRatingsFromFile()
+		#matrix=csr_matrix(matrix)
+		
+		#matrix=numpy.array([[1,2,3,4,0],[2,3,4,0,1],[3,4,0,1,2],[4,0,1,2,3]]).transpose()
+		
+		#matrix=numpy.array([[3,1,1],[-1,3,1]])
+		#matrix=numpy.array([[3,2,2],[2,3,-2]])
+		#matrix=numpy.array([[2,2,0],[-1,-1,0]])
+		#matrix=numpy.array([[2,4],[1,3],[6,5],[7,9]])#.transpose()
+		#print(matrix.shape)
+		'''
+		cf=recommender.CollaborativeFiltering(matrix)
+		k=cf.predict()
+
+		cf=recommender.CollaborativeFilteringBaseline(matrix)
+		k=cf.predict()
+		'''
+		cf=recommender.CURRecommenderSystem(matrix,96)
+		cf.predict()
 
 if __name__ == '__main__':
 	main()
